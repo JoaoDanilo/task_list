@@ -41,9 +41,49 @@ class _HomeState extends State<Home> {
       return null;
     }
   }
+  
+  AppBar appBar() {
+    return AppBar(
+      title: Text("To do list"),
+      backgroundColor: Colors.blueAccent,
+      centerTitle: true,
+    );
+  }
+
+  Column col() {
+    return Column(
+      children: <Widget>[
+        Container(padding: EdgeInsets.fromLTRB(17.0, 1.0, 7.0, 1.0), child: row1())
+      ],
+    );
+  }
+
+  Row row1() {
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: TextField(
+                    decoration: InputDecoration(
+                                  labelText: "New task", 
+                                  labelStyle: TextStyle(color: Colors.blueAccent)
+                                ),
+                  ),
+        ),
+        RaisedButton(
+          color: Colors.blueAccent,
+          child: Text("Add"),
+          textColor: Colors.white,
+          onPressed: (){},
+        )
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: appBar(),
+      body: col(),
+    );
   }
 }
