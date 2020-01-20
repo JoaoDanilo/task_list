@@ -18,7 +18,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
 
-  List _toDoList = [];
+  List _toDoList = ["João", "Maria"];
 
   Future<File> _getFile() async {
     final directory = await getApplicationDocumentsDirectory();
@@ -53,8 +53,25 @@ class _HomeState extends State<Home> {
   Column col() {
     return Column(
       children: <Widget>[
-        Container(padding: EdgeInsets.fromLTRB(17.0, 1.0, 7.0, 1.0), child: row1())
+        Container(padding: EdgeInsets.fromLTRB(17.0, 1.0, 7.0, 1.0), child: row1()),
+        Expanded(child: listTask(),)
       ],
+    );
+  }
+
+  ListView listTask() {
+    return ListView.builder(
+      padding: EdgeInsets.only(top: 10),
+      itemCount: _toDoList.length,
+      itemBuilder: (context, index){
+        return CheckboxListTile(
+          title: Text(_toDoList[index]["title"]),
+          value: _toDoList[index]["ok"],
+          secondary: CircleAvatar(
+            child: Icon(_toDoList[index]["ok"]?Icons.check:Icons.error),
+          ),
+        );
+      },
     );
   }
 
