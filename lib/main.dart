@@ -17,11 +17,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
   final _toDoController = TextEditingController();
   List _toDoList = [];
 
-  void _addToDo(){
+  void _addToDo() {
     Map<String, dynamic> newToDo = new Map();
     newToDo["title"] = _toDoController.text;
     _toDoController.text = "";
@@ -32,7 +31,6 @@ class _HomeState extends State<Home> {
     });
 
     _saveData();
-    
   }
 
   Future<File> _getFile() async {
@@ -47,16 +45,14 @@ class _HomeState extends State<Home> {
   }
 
   Future<String> _readData() async {
-
-    try{
+    try {
       final file = await _getFile();
       return file.readAsString();
-    }
-    catch(e){
+    } catch (e) {
       return null;
     }
   }
-  
+
   AppBar appBar() {
     return AppBar(
       title: Text("To do list"),
@@ -68,8 +64,11 @@ class _HomeState extends State<Home> {
   Column col() {
     return Column(
       children: <Widget>[
-        Container(padding: EdgeInsets.fromLTRB(17.0, 1.0, 7.0, 1.0), child: row1()),
-        Expanded(child: listTask(),)
+        Container(
+            padding: EdgeInsets.fromLTRB(17.0, 1.0, 7.0, 1.0), child: row1()),
+        Expanded(
+          child: listTask(),
+        )
       ],
     );
   }
@@ -78,35 +77,49 @@ class _HomeState extends State<Home> {
     return ListView.builder(
       padding: EdgeInsets.only(top: 10),
       itemCount: _toDoList.length,
-      itemBuilder: (context, index){
-        return CheckboxListTile(
-          title: Text(_toDoList[index]["title"]),
-          value: _toDoList[index]["ok"],
-          secondary: CircleAvatar(
-            child: Icon(_toDoList[index]["ok"]?Icons.check:Icons.error),
-          ),
-          onChanged: (check){
-            setState(() {
-              _toDoList[index]["ok"] = check;
-            });
-            _saveData();
-          },
-        );
-      },
+      itemBuilder: buildItem,
     );
   }
+
+  Widget buildItem(context, index) {
+    return Dismissible(
+      key: Key(DateTime.now().millisecondsSinceEpoch.toString()),
+      background: Container(
+                    color: Colors.red, 
+                    child: Align(
+                              alignment: Alignment(-0.9, 0),
+                              child: Icon(Icons.delete, color: Colors.white),
+                            ),
+                  ),
+      direction: DismissDirection.startToEnd,
+      child:  CheckboxListTile(
+                title: Text(_toDoList[index]["title"]),
+                value: _toDoList[index]["ok"],
+                secondary:  CircleAvatar(
+                              child: Icon(_toDoList[index]["ok"] ? Icons.check : Icons.error),
+                            ),
+                onChanged: (check) {
+                  setState(() {
+                    _toDoList[index]["ok"] = check;
+                  });
+                  _saveData();
+                },
+              )
+    );
+  }
+
+  
 
   Row row1() {
     return Row(
       children: <Widget>[
         Expanded(
           child: TextField(
-                    decoration: InputDecoration(
-                                  labelText: "New task", 
-                                  labelStyle: TextStyle(color: Colors.blueAccent)
-                                ),
-                    controller: _toDoController,
-                  ),
+            decoration: InputDecoration(
+                labelText: "New task",
+                labelStyle: TextStyle(color: Colors.blueAccent)),
+            controller: _toDoController,
+          ),
         ),
         RaisedButton(
           color: Colors.blueAccent,
@@ -121,10 +134,10 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    _readData().then((data){
+    _readData().then((data) {
       setState(() {
         _toDoList = json.decode(data);
-      });      
+      });
     });
   }
 
