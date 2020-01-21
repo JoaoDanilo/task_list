@@ -62,15 +62,34 @@ class _HomeState extends State<Home> {
       centerTitle: true,
     );
   }
+  
+  Future<Null> _refresh() async {
+    await Future.delayed(Duration(seconds: 1));
+
+    setState(() {
+      _toDoList.sort((a,b){
+        if(a["ok"] && !b["ok"])
+          return 1;
+        else if (!a["ok"] && b["ok"])
+          return -1;
+        else
+          return 0;     
+        });
+    });
+
+     _saveData();
+    
+  }
 
   Column col() {
     return Column(
       children: <Widget>[
-        Container(
-            padding: EdgeInsets.fromLTRB(17.0, 1.0, 7.0, 1.0), child: row1()),
-        Expanded(
-          child: listTask(),
-        )
+        Container(padding: EdgeInsets.fromLTRB(17.0, 1.0, 7.0, 1.0), child: row1()),
+        Expanded(child: RefreshIndicator(
+                          onRefresh: _refresh,
+                          child: listTask(),
+                        )
+                )
       ],
     );
   }
@@ -130,7 +149,7 @@ class _HomeState extends State<Home> {
                   ),
           duration: Duration(seconds: 2),
         );
-
+        Scaffold.of(context).removeCurrentSnackBar(); 
         Scaffold.of(context).showSnackBar(snack);
       },
     );
